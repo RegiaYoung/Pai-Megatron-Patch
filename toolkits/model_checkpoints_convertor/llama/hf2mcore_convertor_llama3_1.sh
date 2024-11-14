@@ -66,6 +66,37 @@ EXTRA_VOCAB_SIZE=256
 
 cpu_options=""
 
+elif [ $MODEL_SIZE = 6B ]; then
+
+elif [ $MODEL_SIZE = 3B ]; then
+
+NUM_LAYERS=28
+HIDDEN_SIZE=3072
+NUM_ATTN_HEADS=24
+INTERMEDIATE_SIZE=8192
+NUM_KV_HEADS=8
+VOCAB_SIZE=128256
+ROPE_THETA=500000
+
+gqa_options=" \
+            --group-query-attention \
+            --num-query-groups 8"
+EXTRA_VOCAB_SIZE=256
+
+elif [ $MODEL_SIZE = 1B ]; then
+
+NUM_LAYERS=16
+HIDDEN_SIZE=2048
+NUM_ATTN_HEADS=32
+INTERMEDIATE_SIZE=8192
+NUM_KEY_VALUE_HEADS=8
+VOCAB_SIZE=128256
+ROPE_THETA=500000
+gqa_options=" \
+            --group-query-attention \
+            --num-query-groups 8"
+EXTRA_VOCAB_SIZE=256
+
 fi
 
 if [ $mg2hf = true ]; then
@@ -78,9 +109,12 @@ fi
 
 
 te_options=" \
-            --transformer-impl transformer_engine \
+            --transformer-impl local \
             "
 
+# te_options=" \
+#             --transformer-impl transformer_engine \
+#             "
 
 
 if [ $CHECK = true ]; then
@@ -142,7 +176,8 @@ run_cmd="torchrun ${DISTRIBUTED_ARGS} hf2mcore_llama3_1.py \
     ${convert_options} \
     ${gqa_options} \
     ${pr_options} \
-    ${cpu_options}"
+    ${cpu_options} \
+    ${te_options}"
 
 echo ${run_cmd}
 eval ${run_cmd}
