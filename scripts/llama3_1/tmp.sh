@@ -45,7 +45,7 @@ MP_DATASET_TYPE="raw" sh run_mcore_llama3_1.sh \
     false \
     false \
     true \
-    sel \
+    false \
     static \
     100000 \
     /home/scc/datasets/alpaca_zh-llama3-train.json \
